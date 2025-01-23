@@ -3,6 +3,7 @@ import { PORT } from "./utils/environment";
 import cors from "cors";
 import { solidLogger } from "./utils/globals";
 import { MongoConnect } from "./database/mongo";
+import { authRoute } from "./routes/auth.routes";
 
 const app = express();
 
@@ -12,6 +13,8 @@ app.use(
     origin: "*"
   })
 );
+
+app.use("/api", authRoute);
 
 app.get("/", (req: Request, res: Response): Response => {
   return res.status(200).json({

@@ -1,33 +1,50 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 // Define an interface for the 'currentPlan' field
-interface IReact {
-  github_username: string;
-  package_json: string;
-  initialPaymentDate: string;
-  paymentFrequency: string;
-  paymentCount: number;
+interface IJavascript {
+  git_url: string;
+  package_json: {
+    "@reown/appkit": boolean;
+    "@reown/appkit-adapter-solana": boolean;
+    "@solana/wallet-adapter-wallets": boolean;
+    "@solana/web3.js": boolean;
+    "@solana/spl-token": boolean;
+  };
+  last_checked: Date;
+  points: number;
 }
 
 interface IRust {
-  paymentId: string;
-  price: string;
-  initialPaymentDate: string;
-  paymentFrequency: string;
-  paymentCount: number;
+  git_url: string;
+  cargo_toml: {};
+  last_checked: Date;
+  points: number;
 }
 
-// Define an interface for the user document
+interface IReferree {
+  wallet_address: string;
+  email: string;
+  referral_count: number;
+  points: number;
+}
+
 export interface IUser extends Document {
-  walletAddress: string;
+  wallet_address: string;
   createdAt: Date;
   role: "user" | "admin";
-  currentScout: IReact | IRust;
+  referrals: Array<IReferree>;
+  referral_code: string;
+  points: number;
+  github_username: string;
+  current_scout: {
+    react?: IJavascript[];
+    rust?: IRust[];
+  };
 }
 
 const UserSchema: Schema<IUser> = new mongoose.Schema(
   {
-    walletAddress: {
+    wallet_address: {
       type: String,
       required: true
     },
@@ -40,15 +57,21 @@ const UserSchema: Schema<IUser> = new mongoose.Schema(
       default: "user",
       enum: ["user", "admin"]
     },
-    currentScout: {
-      type: {
-        paymentId: { type: String, default: "" },
-        price: { type: String, default: "" },
-        initialPaymentDate: { type: String, default: "" },
-        paymentFrequency: { type: String, default: "" },
-        paymentCount: { type: Number, default: 0 }
+    referrals: [],
+    referral_code: String,
+    points: {
+      type: Number,
+      default: 0
+    },
+    current_scout: {
+      react: {
+        type: Array<IJavascript>,
+        default: null
       },
-      default: {}
+      rust: {
+        type: Array<IRust>,
+        default: null
+      }
     }
   },
   { timestamps: true }
