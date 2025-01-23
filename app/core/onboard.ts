@@ -16,9 +16,7 @@ export const onboardUser = async (
       let existing_referrees = referrer.referrals;
       existing_referrees.push({
         email,
-        wallet_address,
-        referral_count: 0,
-        points: 0
+        wallet_address
       });
 
       await UserSchema.findByIdAndUpdate(referrer._id, {

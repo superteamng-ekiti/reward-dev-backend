@@ -31,8 +31,6 @@ export interface IRust {
 interface IReferree {
   wallet_address: string;
   email: string;
-  referral_count: number;
-  points: number;
 }
 
 export interface IUser extends Document {
