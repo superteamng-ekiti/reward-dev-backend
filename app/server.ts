@@ -14,13 +14,14 @@ app.use(
   })
 );
 
+// TODO - auth - calculate points - fetch points - fetch referrals
 app.use("/api", authRoute);
 
 app.get("/", (req: Request, res: Response): Response => {
   return res.status(200).json({
     status: 200,
-    message: "Welcome to reward.dev's api endpoint",
-    response: `You're hitting ${req.baseUrl} on reward.dev Backend... looks like you're connected. But then, why are you here 😒 ? If you are lost then refer to the APIs docs.`
+    message: "Welcome to reward-dev's api endpoint",
+    response: `You're hitting ${req.baseUrl} on reward-dev Backend... looks like you're connected. But then, why are you here 😒 ? If you are lost then refer to the APIs docs.`
   });
 });
 

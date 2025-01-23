@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 // Define an interface for the 'currentPlan' field
-interface IJavascript {
+export interface IJavascript {
   git_url: string;
   package_json: {
     "@reown/appkit": boolean;
@@ -14,9 +14,13 @@ interface IJavascript {
   points: number;
 }
 
-interface IRust {
+export interface IRust {
   git_url: string;
-  cargo_toml: {};
+  cargo_toml: {
+    spl_token: boolean;
+    solana_sdk: boolean;
+    anchor_lang: boolean;
+  };
   last_checked: Date;
   points: number;
 }
@@ -37,7 +41,7 @@ export interface IUser extends Document {
   points: number;
   github_username: string;
   current_scout: {
-    react?: IJavascript[];
+    javascript?: IJavascript[];
     rust?: IRust[];
   };
 }
