@@ -52,7 +52,7 @@ export const scoutController = async (req: Request, res: Response) => {
       id
     );
 
-    return serverResponse("awesome 😎", do_scout, 200, { req, res });
+    return serverResponse("awesome 😎", do_scout as Object, 200, { req, res });
   } catch (error) {
     serverResponse(
       "something went wrong calculating those points",

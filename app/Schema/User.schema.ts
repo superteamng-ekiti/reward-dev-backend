@@ -68,13 +68,13 @@ const UserSchema: Schema<IUser> = new mongoose.Schema(
       default: 0
     },
     current_scout: {
-      react: {
+      javascript: {
         type: Array<IJavascript>,
-        default: null
+        default: []
       },
       rust: {
         type: Array<IRust>,
-        default: null
+        default: []
       }
     }
   },

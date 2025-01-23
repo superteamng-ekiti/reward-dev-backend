@@ -5,6 +5,7 @@ import UserSchema, { IJavascript, IRust } from "../Schema/User.schema";
 interface CargoToml {
   dependencies?: Record<string, string | object>;
 }
+// testing
 
 export const scout = async (
   type: "rs" | "js",
@@ -16,7 +17,12 @@ export const scout = async (
 ): Promise<IJavascript | IRust> => {
   try {
     if (type === "js") {
-      const package_json = JSON.parse(stringified_document);
+      let package_json;
+      try {
+        package_json = JSON.parse(stringified_document);
+      } catch (error) {
+        throw new Error("Invalid JSON document provided: " + error);
+      }
 
       const scoutData = {
         "@reown/appkit": !!package_json.dependencies?.["@reown/appkit"],
@@ -27,7 +33,8 @@ export const scout = async (
         "@solana/web3.js": !!package_json.dependencies?.["@solana/web3.js"],
         "@solana/spl-token": !!package_json.dependencies?.["@solana/spl-token"]
       };
-      let javascript_interface: IJavascript = {
+
+      const javascript_interface: IJavascript = {
         git_url,
         last_checked,
         package_json: scoutData,
@@ -35,39 +42,50 @@ export const scout = async (
       };
 
       const points_awarded = awardPointsJS(javascript_interface);
-
-      const user = await UserSchema.findById(id);
-      const user_js_scouts = user?.current_scout.javascript;
-
-      const existing_scout = user_js_scouts?.findIndex(
-        (e, i) => e.git_url == git_url
-      );
-
-      if (user_js_scouts && existing_scout && existing_scout !== -1) {
-        user_js_scouts[existing_scout] = points_awarded;
-      } else {
-        user_js_scouts?.push(points_awarded);
+      if (!points_awarded || typeof points_awarded !== "object") {
+        throw new Error("Invalid points_awarded structure.");
       }
 
-      const new_user_scout = await UserSchema.findByIdAndUpdate(id, {
-        "current_scout.javascript": user_js_scouts
-      });
+      const user = await UserSchema.findById(id);
+      const user_js_scouts = user?.current_scout?.javascript || [];
 
-      const saved_scout = new_user_scout?.current_scout.javascript?.findIndex(
-        (e, i) => e.git_url == git_url
+      const existing_scout = user_js_scouts.findIndex(
+        (e) => e.git_url === git_url
       );
 
-      if (new_user_scout?.current_scout.javascript && saved_scout) {
-        return new_user_scout?.current_scout.javascript[saved_scout];
-      } else throw "someting went wrong assigning your js points";
+      if (existing_scout !== -1) {
+        user_js_scouts[existing_scout] = points_awarded;
+      } else {
+        user_js_scouts.push(points_awarded);
+      }
+
+      const new_user_scout = await UserSchema.findByIdAndUpdate(
+        id,
+        { "current_scout.javascript": user_js_scouts },
+        { new: true }
+      );
+
+      const saved_scout = new_user_scout?.current_scout?.javascript?.findIndex(
+        (e) => e.git_url === git_url
+      );
+
+      console.log(saved_scout);
+
+      if (saved_scout !== -1) {
+        if (new_user_scout?.current_scout.javascript) {
+          return new_user_scout?.current_scout.javascript[saved_scout || 0];
+        }
+      } else {
+        throw new Error("Something went wrong assigning your JS points.");
+      }
     } else if (type === "rs") {
       const cargo_toml: CargoToml = toml.parse(stringified_document);
       const dependencies = cargo_toml.dependencies || {};
 
       const scoutData = {
-        solana_sdk: !!dependencies["solana-sdk"],
-        anchor_lang: !!dependencies["anchor-lang"],
-        spl_token: !!dependencies["spl-token"]
+        solana_sdk: dependencies["solana-sdk"] ? true : false,
+        anchor_lang: dependencies["anchor-lang"] ? true : false,
+        spl_token: dependencies["spl-token"] ? true : false
       };
 
       let rust_interface: IRust = {
@@ -76,41 +94,51 @@ export const scout = async (
         cargo_toml: scoutData,
         points
       };
+
       const points_awarded = awardPointsRS(rust_interface);
-      const user = await UserSchema.findById(id);
-      const user_rs_scouts = user?.current_scout.rust;
-
-      const existing_scout = user_rs_scouts?.findIndex(
-        (e, i) => e.git_url == git_url
-      );
-
-      if (user_rs_scouts && existing_scout && existing_scout !== -1) {
-        user_rs_scouts[existing_scout] = points_awarded;
-      } else {
-        user_rs_scouts?.push(points_awarded);
+      if (!points_awarded || typeof points_awarded !== "object") {
+        throw new Error("Invalid points_awarded structure.");
       }
 
-      const new_user_scout = await UserSchema.findByIdAndUpdate(id, {
-        "current_scout.rust": user_rs_scouts
-      });
+      const user = await UserSchema.findById(id);
+      const user_rs_scouts = user?.current_scout?.rust || [];
 
-      const saved_scout = new_user_scout?.current_scout.rust?.findIndex(
-        (e, i) => e.git_url == git_url
+      const existing_scout = user_rs_scouts.findIndex(
+        (e) => e.git_url === git_url
       );
 
-      if (new_user_scout?.current_scout.rust && saved_scout) {
-        return new_user_scout?.current_scout.rust[saved_scout];
-      } else throw "someting went wrong assigning your points";
+      if (existing_scout !== -1) {
+        user_rs_scouts[existing_scout] = points_awarded;
+      } else {
+        user_rs_scouts.push(points_awarded);
+      }
+
+      const new_user_scout = await UserSchema.findByIdAndUpdate(
+        id,
+        { "current_scout.rust": user_rs_scouts },
+        { new: true }
+      );
+
+      const saved_scout = new_user_scout?.current_scout?.rust?.findIndex(
+        (e) => e.git_url === git_url
+      );
+      console.log(saved_scout);
+      if (saved_scout !== -1) {
+        if (new_user_scout?.current_scout.rust) {
+          return new_user_scout?.current_scout.rust[saved_scout || 0];
+        }
+      } else {
+        throw new Error("Something went wrong assigning your RS points.");
+      }
     }
 
-    throw "invalid language tpe rs or js";
+    throw new Error("Invalid language type: must be 'rs' or 'js'.");
   } catch (error) {
     console.error("Error in scout function:", error);
-    throw "error occured " + error;
+    throw new Error("Error occurred: " + error);
   }
 };
 
-// testing
 const json = {
   name: "superteam-ekiti-fun",
   private: true,
@@ -163,5 +191,43 @@ const json = {
   }
 };
 
-console.log("testing package_json");
-console.log(scout("js", "urlll", JSON.stringify(json), new Date(), 20, "fjk"));
+// console.log("testing package_json");
+// console.log(
+//   scout(
+//     "js",
+//     "urllrrl",
+//     JSON.stringify(json),
+//     new Date(),
+//     20,
+//     "679271e318dff2447abac93d"
+//   )
+//     .then((res) => console.log(res))
+//     .catch((error) => console.log("errrr " + error))
+// );
+
+const tomll = `[package]
+name = "superteam-ekiti-fun"
+version = "0.0.0"
+authors = ["Your Name <youremail@example.com>"]
+edition = "2021"
+publish = false
+
+[dependencies]
+solana-program = "1.9.9"
+anchor_lang = "4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+borsh = "0.9.0"
+thiserror = "1.0"
+solana_sdk = "2.3.5"
+
+[dev-dependencies]
+solana-test-validator = "1.9.9"
+mockall = "0.10"`;
+
+// console.log("testing toml");
+// console.log(
+//   scout("rs", "urllrrddl", tomll, new Date(), 20, "679271e318dff2447abac93d")
+//     .then((res) => console.log(res))
+//     .catch((error) => console.log("errrr " + error))
+// );
