@@ -32,6 +32,17 @@ export const scoutController = async (req: Request, res: Response) => {
     // type can be js or rs
 
     const user = await UserSchema.findById(id);
+    if (!user) {
+      return serverResponse(
+        "something went wrong calculating those points",
+        "user not found",
+        409,
+        {
+          req,
+          res
+        }
+      );
+    }
     const user_scout =
       type == "js" ? user?.current_scout.javascript : user?.current_scout.rust;
 

@@ -16,7 +16,7 @@ export const scout = async (
   id: string
 ): Promise<IJavascript | IRust> => {
   try {
-    if (type === "js") {
+    if (type == "js") {
       let package_json;
       try {
         package_json = JSON.parse(stringified_document);
@@ -78,7 +78,7 @@ export const scout = async (
       } else {
         throw new Error("Something went wrong assigning your JS points.");
       }
-    } else if (type === "rs") {
+    } else if (type == "rs") {
       const cargo_toml: CargoToml = toml.parse(stringified_document);
       const dependencies = cargo_toml.dependencies || {};
 
