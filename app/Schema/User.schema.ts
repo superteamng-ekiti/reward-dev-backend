@@ -9,6 +9,9 @@ export interface IJavascript {
     "@solana/wallet-adapter-wallets": boolean;
     "@solana/web3.js": boolean;
     "@solana/spl-token": boolean;
+    "@solana/wallet-adapter-base": boolean;
+    "@solana/wallet-adapter-react": boolean;
+    "@solana/wallet-adapter-react-ui": boolean;
   };
   last_checked: Date;
   points: number;

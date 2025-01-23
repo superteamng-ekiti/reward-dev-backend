@@ -31,7 +31,13 @@ export const scout = async (
         "@solana/wallet-adapter-wallets":
           !!package_json.dependencies?.["@solana/wallet-adapter-wallets"],
         "@solana/web3.js": !!package_json.dependencies?.["@solana/web3.js"],
-        "@solana/spl-token": !!package_json.dependencies?.["@solana/spl-token"]
+        "@solana/spl-token": !!package_json.dependencies?.["@solana/spl-token"],
+        "@solana/wallet-adapter-base":
+          !!package_json.dependencies?.["@solana/wallet-adapter-base"],
+        "@solana/wallet-adapter-react":
+          !!package_json.dependencies?.["@solana/wallet-adapter-react"],
+        "@solana/wallet-adapter-react-ui":
+          !!package_json.dependencies?.["@solana/wallet-adapter-react-ui"]
       };
 
       const javascript_interface: IJavascript = {
@@ -80,12 +86,15 @@ export const scout = async (
       }
     } else if (type == "rs") {
       const cargo_toml: CargoToml = toml.parse(stringified_document);
+
+      console.log("===== ===");
+      console.log(cargo_toml.dependencies);
       const dependencies = cargo_toml.dependencies || {};
 
       const scoutData = {
-        solana_sdk: dependencies["solana-sdk"] ? true : false,
-        anchor_lang: dependencies["anchor-lang"] ? true : false,
-        spl_token: dependencies["spl-token"] ? true : false
+        solana_sdk: !!dependencies["solana_sdk"],
+        anchor_lang: !!dependencies["anchor_lang"],
+        spl_token: !!dependencies["spl_token"]
       };
 
       let rust_interface: IRust = {

@@ -26,7 +26,10 @@ export const JSPOINTS = {
   "@reown/appkit-adapter-solana": 150,
   "@solana/wallet-adapter-wallets": 150,
   "@solana/web3.js": 250,
-  "@solana/spl-token": 250
+  "@solana/spl-token": 250,
+  "@solana/wallet-adapter-base": 150,
+  "@solana/wallet-adapter-react": 150,
+  "@solana/wallet-adapter-react-ui": 150
 };
 
 export const RUSTPOINTS = {
@@ -58,8 +61,13 @@ export const awardPointsRS = (dependencies: IRust): IRust => {
   const cargo_toml = dependencies.cargo_toml;
 
   Object.entries(RUSTPOINTS).forEach(([key, points]) => {
-    if (key in cargo_toml && cargo_toml[key as keyof typeof cargo_toml]) {
-      accumulated_points += points;
+    if (key in cargo_toml) {
+      // console.log(`Dependency ${key} exists with value: ${cargo_toml[key]}`);
+      if (cargo_toml[key as keyof typeof cargo_toml]) {
+        accumulated_points += points;
+      }
+    } else {
+      console.log(`Dependency ${key} not found`);
     }
   });
 
