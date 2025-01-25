@@ -3,6 +3,8 @@ import { onboardUser } from "../core/onboard";
 import { serverResponse } from "../utils/serverResponse";
 import { scout } from "../core/scout";
 import UserSchema from "../Schema/User.schema";
+import path from "path";
+import { fetchRepoPackage } from "../core/octokit";
 
 export const onboardUserController = async (req: Request, res: Response) => {
   try {
@@ -28,21 +30,15 @@ export const onboardUserController = async (req: Request, res: Response) => {
 
 export const scoutController = async (req: Request, res: Response) => {
   try {
-    const { type, access_token, gitub_url, id } = req.body;
+    const { type, access_token, github_url, id } = req.body;
     // type can be js or rs
     if (!access_token) throw "please provide access token";
 
-    const fileExtension =
-      process.env.NODE_ENV === "production" ? ".mjs" : ".mjs";
-    const { fetchRepoPackage } = await import(
-      `../core/octokit${fileExtension}`
-    );
-
-    const stringified_document = await fetchRepoPackage(
+    const stringified_document = await fetchRepoPackage({
       access_token,
-      gitub_url,
+      github_url,
       type
-    );
+    });
 
     const user = await UserSchema.findById(id);
     if (!user) {
@@ -60,12 +56,12 @@ export const scoutController = async (req: Request, res: Response) => {
       type == "js" ? user?.current_scout.javascript : user?.current_scout.rust;
 
     const existing_scout_index = user_scout?.findIndex(
-      (e, i) => e.git_url == gitub_url
+      (e, i) => e.git_url == github_url
     );
 
     const do_scout = await scout(
       type,
-      gitub_url,
+      github_url,
       stringified_document,
       user_scout && existing_scout_index && existing_scout_index !== -1
         ? user_scout[existing_scout_index].last_checked
