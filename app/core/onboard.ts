@@ -35,3 +35,9 @@ export const onboardUser = async (
   new_user = await new_user.save();
   return new_user;
 };
+
+export const fetchReferrals = async (id: string) => {
+  const exising_user = await UserSchema.findById(id);
+  if (!exising_user) throw "could not find user";
+  return exising_user?.referrals;
+};

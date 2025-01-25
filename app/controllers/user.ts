@@ -3,6 +3,7 @@ import { onboardUser } from "../core/onboard";
 import { serverResponse } from "../utils/serverResponse";
 import { scout } from "../core/scout";
 import UserSchema from "../Schema/User.schema";
+// import { fetchRepoPackage } from "../core/octokit.mjs";
 
 export const onboardUserController = async (req: Request, res: Response) => {
   try {
@@ -28,8 +29,21 @@ export const onboardUserController = async (req: Request, res: Response) => {
 
 export const scoutController = async (req: Request, res: Response) => {
   try {
-    const { type, stringified_document, gitub_url, id } = req.body;
+    const { type, access_token, gitub_url, id } = req.body;
     // type can be js or rs
+    if (!access_token) throw "please provide access token";
+
+    const fileExtension =
+      process.env.NODE_ENV === "production" ? ".mjs" : ".mts";
+    const { fetchRepoPackage } = await import(
+      `../core/octokit${fileExtension}`
+    );
+
+    const stringified_document = await fetchRepoPackage(
+      access_token,
+      gitub_url,
+      type
+    );
 
     const user = await UserSchema.findById(id);
     if (!user) {

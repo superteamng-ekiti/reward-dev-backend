@@ -28,7 +28,7 @@ export const fetchRepoPackage = async (
       const content = Buffer.from(response.data.content, "base64").toString(
         "utf-8"
       );
-      return JSON.parse(content); // Parse JSON content
+      return JSON.stringify(content); // stringify JSON content
     } else {
       throw new Error("Failed to fetch package.json or no content available.");
     }
@@ -37,3 +37,15 @@ export const fetchRepoPackage = async (
     throw error;
   }
 };
+
+// Usage
+// fetchRepoPackage(
+//   "",
+//   "https://github.com/Elijah699/solana-january-workshop"
+// )
+//   .then((res) => {
+//     console.log("Package.json Content:", res);
+//   })
+//   .catch((err) => {
+//     console.error("Error:", err.message);
+//   });
