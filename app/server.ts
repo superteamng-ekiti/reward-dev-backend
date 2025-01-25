@@ -4,6 +4,7 @@ import cors from "cors";
 import { solidLogger } from "./utils/globals";
 import { MongoConnect } from "./database/mongo";
 import { authRoute } from "./routes/auth.routes";
+import { referralRoute } from "./routes/referrals.routes";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(
 
 // TODO - auth - calculate points - fetch points - fetch referrals
 app.use("/api", authRoute);
+app.use("/api", referralRoute);
 
 app.get("/", (req: Request, res: Response): Response => {
   return res.status(200).json({

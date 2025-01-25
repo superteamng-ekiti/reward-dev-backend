@@ -3,7 +3,6 @@ import { onboardUser } from "../core/onboard";
 import { serverResponse } from "../utils/serverResponse";
 import { scout } from "../core/scout";
 import UserSchema from "../Schema/User.schema";
-// import { fetchRepoPackage } from "../core/octokit.mjs";
 
 export const onboardUserController = async (req: Request, res: Response) => {
   try {
@@ -79,6 +78,7 @@ export const scoutController = async (req: Request, res: Response) => {
 
     return serverResponse("awesome 😎", do_scout as Object, 200, { req, res });
   } catch (error) {
+    console.log(error);
     serverResponse(
       "something went wrong calculating those points",
       error as string,
