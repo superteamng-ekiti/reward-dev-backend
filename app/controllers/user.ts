@@ -13,7 +13,7 @@ export const onboardUserController = async (req: Request, res: Response) => {
 
     return serverResponse("welcome onboard Dev", new_user as Object, 200, {
       req,
-      res
+      res,
     });
   } catch (error) {
     serverResponse(
@@ -22,7 +22,7 @@ export const onboardUserController = async (req: Request, res: Response) => {
       409,
       {
         req,
-        res
+        res,
       }
     );
   }
@@ -35,12 +35,12 @@ export const fetchUserController = async (req: Request, res: Response) => {
 
     return serverResponse("welcome onboard Dev", user as Object, 200, {
       req,
-      res
+      res,
     });
   } catch (error) {
     serverResponse("something went wrong finding you", error as string, 409, {
       req,
-      res
+      res,
     });
   }
 };
@@ -54,7 +54,7 @@ export const scoutController = async (req: Request, res: Response) => {
     const stringified_document = await fetchRepoPackage({
       access_token,
       github_url,
-      type
+      type,
     });
 
     const user = await UserSchema.findById(id);
@@ -65,7 +65,7 @@ export const scoutController = async (req: Request, res: Response) => {
         409,
         {
           req,
-          res
+          res,
         }
       );
     }
@@ -98,8 +98,33 @@ export const scoutController = async (req: Request, res: Response) => {
       409,
       {
         req,
-        res
+        res,
       }
     );
   }
 };
+
+export const getUserDetails = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  let User = await fetchUser(id);
+
+  // Validate if 'id' is provided
+  if (!id) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
+  // Fetch the user by ID
+  const user = await fetchUser(id);
+
+  console.log(`id ${id} user: ${user}`);
+
+  // Check if the user was found
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  // Respond with the user's details
+  res.status(200).json(User);
+};
+
+// {"message":"welcome onboard Dev","response":{"wallet_address":"techwithgwin","createdAt":"2025-01-26T17:38:35.724Z","role":"user","referrals":[],"referral_code":"reO8aHq2_dev","points":0,"current_scout":{"javascript":[],"rust":[]},"_id":"6796777c46064b31f5bbb979","updatedAt":"2025-01-26T17:38:35.724Z","__v":0},"status":200}
