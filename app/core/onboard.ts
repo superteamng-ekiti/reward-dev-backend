@@ -7,7 +7,8 @@ export const onboardUser = async (
   referrer_ref: string | undefined | null
 ) => {
   const exising_user = await UserSchema.findOne({ wallet_address });
-  if (exising_user) throw "User already exists";
+
+  if (exising_user) return exising_user;
 
   // logic for referral allocation
   if (referrer_ref) {

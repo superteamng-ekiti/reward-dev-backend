@@ -36,11 +36,11 @@ export const scoutController = async (req: Request, res: Response) => {
 
  
 
-    const stringified_document = await fetchRepoPackage(
+    const stringified_document = await fetchRepoPackage({
       access_token,
       github_url,
-      type
-    });
+      type}
+    );
 
     const user = await UserSchema.findById(id);
     if (!user) {
