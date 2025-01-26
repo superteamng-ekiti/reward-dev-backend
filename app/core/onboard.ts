@@ -42,3 +42,9 @@ export const fetchReferrals = async (id: string) => {
   if (!exising_user) throw "could not find user";
   return exising_user?.referrals;
 };
+
+export const fetchUser = async (id: string) => {
+  const exising_user = await UserSchema.findById(id);
+  if (!exising_user) throw "could not find user";
+  return exising_user;
+};
