@@ -10,7 +10,7 @@
     "node": "18"
   },
   "scripts": {
-    "dev": "tsc && nodemon app/server.ts",
+    "dev": "tsc && nodemon app/server.js",
     "build": "tsc",
     "start": "node dist/server.js"
   },

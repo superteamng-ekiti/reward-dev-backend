@@ -33,7 +33,7 @@ export const scoutController = async (req: Request, res: Response) => {
     if (!access_token) throw "please provide access token";
 
     const fileExtension =
-      process.env.NODE_ENV === "production" ? ".mjs" : ".mjs";
+      process.env.NODE_ENV === "production" ? ".mjs" : ".mts";
     const { fetchRepoPackage } = await import(
       `../core/octokit${fileExtension}`
     );
