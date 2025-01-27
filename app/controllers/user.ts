@@ -132,15 +132,26 @@ export const getUserDetails = async (req: Request, res: Response) => {
 };
 
 export const leaderboardController = async (req: Request, res: Response) => {
-  let page = 1;
-  const pageSize = 3; // Number of documents per page
-  const skip = (page - 1) * pageSize; // Calculate the number of documents to skip
+  try {
+    let page = 1;
+    const pageSize = 10; // Number of documents per page
+    const skip = (page - 1) * pageSize; // Calculate the number of documents to skip
 
-  const results = await UserSchema.find({})
-    .select("wallet_address email points referrals")
-    .skip(skip) // Skip documents for previous pages
-    .limit(pageSize) // Limit the number of documents to the page size
-    .exec();
+    const results = await UserSchema.find({})
+      .select("wallet_address email points") // Include only wallet_address, email, and points
+      .sort({ points: -1 }) // Sort by points in descending order
+      .skip(skip) // Skip documents for previous pages
+      .limit(pageSize) // Limit the number of documents to the page size
+      .exec();
 
-  return serverResponse("leaders 🎊 😎", results as Object, 200, { req, res });
+    return serverResponse("leaders 🎊 😎", results as Object, 200, {
+      req,
+      res
+    });
+  } catch (error) {
+    return serverResponse("Error fetching leaderboard", error as string, 500, {
+      req,
+      res
+    });
+  }
 };
