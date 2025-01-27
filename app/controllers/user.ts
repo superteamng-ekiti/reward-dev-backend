@@ -48,8 +48,10 @@ export const fetchUserController = async (req: Request, res: Response) => {
 export const scoutController = async (req: Request, res: Response) => {
   try {
     const { type, access_token, github_url, id } = req.body;
+    let permited_type = ["js", "rs"];
     // type can be js or rs
     if (!access_token) throw "please provide access token";
+    if (type && !permited_type.includes(type)) throw "invalid type js or rs";
 
     const stringified_document = await fetchRepoPackage({
       access_token,
