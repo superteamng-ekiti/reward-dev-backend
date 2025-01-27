@@ -123,8 +123,11 @@ export const getUserDetails = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "User not found" });
   }
 
+  //Extracting the referral_code and referrals from the users object
+  const { referral_code, referrals } = user;
+
   // Respond with the user's details
-  res.status(200).json(User);
+  res.status(200).json({ referral_code, referrals  });
 };
 
 // {"message":"welcome onboard Dev","response":{"wallet_address":"techwithgwin","createdAt":"2025-01-26T17:38:35.724Z","role":"user","referrals":[],"referral_code":"reO8aHq2_dev","points":0,"current_scout":{"javascript":[],"rust":[]},"_id":"6796777c46064b31f5bbb979","updatedAt":"2025-01-26T17:38:35.724Z","__v":0},"status":200}
