@@ -13,7 +13,7 @@ export const onboardUserController = async (req: Request, res: Response) => {
 
     return serverResponse("welcome onboard Dev", new_user as Object, 200, {
       req,
-      res,
+      res
     });
   } catch (error) {
     serverResponse(
@@ -22,7 +22,7 @@ export const onboardUserController = async (req: Request, res: Response) => {
       409,
       {
         req,
-        res,
+        res
       }
     );
   }
@@ -35,12 +35,12 @@ export const fetchUserController = async (req: Request, res: Response) => {
 
     return serverResponse("welcome onboard Dev", user as Object, 200, {
       req,
-      res,
+      res
     });
   } catch (error) {
     serverResponse("something went wrong finding you", error as string, 409, {
       req,
-      res,
+      res
     });
   }
 };
@@ -56,7 +56,7 @@ export const scoutController = async (req: Request, res: Response) => {
     const stringified_document = await fetchRepoPackage({
       access_token,
       github_url,
-      type,
+      type
     });
 
     const user = await UserSchema.findById(id);
@@ -67,7 +67,7 @@ export const scoutController = async (req: Request, res: Response) => {
         409,
         {
           req,
-          res,
+          res
         }
       );
     }
@@ -100,7 +100,7 @@ export const scoutController = async (req: Request, res: Response) => {
       409,
       {
         req,
-        res,
+        res
       }
     );
   }
@@ -108,7 +108,6 @@ export const scoutController = async (req: Request, res: Response) => {
 
 export const getUserDetails = async (req: Request, res: Response) => {
   const { id } = req.body;
-  let User = await fetchUser(id);
 
   // Validate if 'id' is provided
   if (!id) {
@@ -125,11 +124,23 @@ export const getUserDetails = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "User not found" });
   }
 
-  //Extracting the referral_code and referrals from the users object
+  // Extracting the referral_code and referrals from the users object
   const { referral_code, referrals } = user;
 
   // Respond with the user's details
-  res.status(200).json({ referral_code, referrals  });
+  res.status(200).json({ referral_code, referrals });
 };
 
-// {"message":"welcome onboard Dev","response":{"wallet_address":"techwithgwin","createdAt":"2025-01-26T17:38:35.724Z","role":"user","referrals":[],"referral_code":"reO8aHq2_dev","points":0,"current_scout":{"javascript":[],"rust":[]},"_id":"6796777c46064b31f5bbb979","updatedAt":"2025-01-26T17:38:35.724Z","__v":0},"status":200}
+export const leaderboardController = async (req: Request, res: Response) => {
+  let page = 1;
+  const pageSize = 3; // Number of documents per page
+  const skip = (page - 1) * pageSize; // Calculate the number of documents to skip
+
+  const results = await UserSchema.find({})
+    .select("wallet_address email points referrals")
+    .skip(skip) // Skip documents for previous pages
+    .limit(pageSize) // Limit the number of documents to the page size
+    .exec();
+
+  return serverResponse("leaders 🎊 😎", results as Object, 200, { req, res });
+};
