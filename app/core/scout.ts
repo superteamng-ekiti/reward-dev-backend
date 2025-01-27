@@ -87,7 +87,7 @@ export const scout = async (
     } else if (type == "rs") {
       const cargo_toml: CargoToml = toml.parse(stringified_document);
 
-      console.log("===== ===");
+      console.log("========");
       console.log(cargo_toml.dependencies);
       const dependencies = cargo_toml.dependencies || {};
 
@@ -132,6 +132,8 @@ export const scout = async (
         (e) => e.git_url === git_url
       );
       console.log(saved_scout);
+
+      await doCalculatePoints(id);
       if (saved_scout !== -1) {
         if (new_user_scout?.current_scout.rust) {
           return new_user_scout?.current_scout.rust[saved_scout || 0];
@@ -146,6 +148,27 @@ export const scout = async (
     console.error("Error in scout function:", error);
     throw new Error("Error occurred: " + error);
   }
+};
+
+const doCalculatePoints = async (id: string) => {
+  const user_details = await UserSchema.findById(id);
+  let total_points = 0;
+
+  let user_packages_js = user_details?.current_scout.javascript;
+  let user_packages_rs = user_details?.current_scout.rust;
+
+  user_packages_js?.map((e, i) => {
+    total_points = total_points + e.points;
+  });
+
+  user_packages_rs?.map((f, j) => {
+    total_points = total_points + f.points;
+  });
+  console.log("user total points ", total_points);
+
+  return UserSchema.findByIdAndUpdate(id, {
+    points: total_points
+  });
 };
 
 const json = {
