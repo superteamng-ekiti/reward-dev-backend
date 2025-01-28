@@ -37,14 +37,14 @@ export const scout = async (
         "@solana/wallet-adapter-react":
           !!package_json.dependencies?.["@solana/wallet-adapter-react"],
         "@solana/wallet-adapter-react-ui":
-          !!package_json.dependencies?.["@solana/wallet-adapter-react-ui"]
+          !!package_json.dependencies?.["@solana/wallet-adapter-react-ui"],
       };
 
       const javascript_interface: IJavascript = {
         git_url,
         last_checked,
         package_json: scoutData,
-        points
+        points,
       };
 
       const points_awarded = awardPointsJS(javascript_interface);
@@ -76,6 +76,7 @@ export const scout = async (
       );
 
       console.log(saved_scout);
+      await doCalculatePoints(id);
 
       if (saved_scout !== -1) {
         if (new_user_scout?.current_scout.javascript) {
@@ -94,14 +95,14 @@ export const scout = async (
       const scoutData = {
         solana_sdk: !!dependencies["solana_sdk"],
         anchor_lang: !!dependencies["anchor_lang"],
-        spl_token: !!dependencies["spl_token"]
+        spl_token: !!dependencies["spl_token"],
       };
 
       let rust_interface: IRust = {
         git_url,
         last_checked,
         cargo_toml: scoutData,
-        points
+        points,
       };
 
       const points_awarded = awardPointsRS(rust_interface);
@@ -134,6 +135,7 @@ export const scout = async (
       console.log(saved_scout);
 
       await doCalculatePoints(id);
+
       if (saved_scout !== -1) {
         if (new_user_scout?.current_scout.rust) {
           return new_user_scout?.current_scout.rust[saved_scout || 0];
@@ -152,23 +154,35 @@ export const scout = async (
 
 const doCalculatePoints = async (id: string) => {
   const user_details = await UserSchema.findById(id);
+  if (!user_details) {
+    throw new Error("User not found");
+  }
+
   let total_points = 0;
 
-  let user_packages_js = user_details?.current_scout.javascript;
-  let user_packages_rs = user_details?.current_scout.rust;
+  const user_packages_js = user_details?.current_scout?.javascript || [];
+  const user_packages_rs = user_details?.current_scout?.rust || [];
 
-  user_packages_js?.map((e, i) => {
-    total_points = total_points + e.points;
-  });
+  // Process JavaScript packages asynchronously
+  for (const e of user_packages_js) {
+    total_points += await processPointsAsync(e.points); // Example of async logic
+  }
 
-  user_packages_rs?.map((f, j) => {
-    total_points = total_points + f.points;
-  });
+  // Process Rust packages asynchronously
+  for (const f of user_packages_rs) {
+    total_points += await processPointsAsync(f.points); // Example of async logic
+  }
+
   console.log("user total points ", total_points);
 
-  return UserSchema.findByIdAndUpdate(id, {
-    points: total_points
-  });
+  // Update the user's total points
+  return await UserSchema.findByIdAndUpdate(id, { points: total_points });
+};
+
+// Example of an asynchronous function for processing points (if needed)
+const processPointsAsync = async (points: number): Promise<number> => {
+  // Simulate some async processing, e.g., fetching additional data
+  return new Promise((resolve) => setTimeout(() => resolve(points), 10)); // Simulate delay
 };
 
 const json = {
@@ -180,7 +194,7 @@ const json = {
     dev: "vite",
     build: "tsc -b && vite build",
     lint: "eslint .",
-    preview: "vite preview"
+    preview: "vite preview",
   },
   dependencies: {
     "@radix-ui/react-slot": "^1.1.1",
@@ -202,7 +216,7 @@ const json = {
     viem: "^2.22.9",
     "vite-plugin-svgr": "^4.3.0",
     wagmi: "^2.14.8",
-    zustand: "^5.0.3"
+    zustand: "^5.0.3",
   },
   devDependencies: {
     "@eslint/js": "^9.17.0",
@@ -219,8 +233,8 @@ const json = {
     tailwindcss: "^3.4.17",
     typescript: "~5.6.2",
     "typescript-eslint": "^8.18.2",
-    vite: "^6.0.5"
-  }
+    vite: "^6.0.5",
+  },
 };
 
 // console.log("testing package_json");
