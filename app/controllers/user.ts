@@ -138,7 +138,7 @@ export const leaderboardController = async (req: Request, res: Response) => {
     const skip = (page - 1) * pageSize; // Calculate the number of documents to skip
 
     const results = await UserSchema.find({})
-      .select("wallet_address email points") // Include only wallet_address, email, and points
+      .select("wallet_address points referrals") // Include only wallet_address, email, and points
       .sort({ points: -1 }) // Sort by points in descending order
       .skip(skip) // Skip documents for previous pages
       .limit(pageSize) // Limit the number of documents to the page size
