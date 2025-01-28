@@ -57,7 +57,6 @@
 // //     console.error("Error:", err.message);
 // //   });
 
-
 import axios from "axios";
 
 export const fetchRepoPackage = async ({
@@ -96,7 +95,10 @@ export const fetchRepoPackage = async ({
       console.log(`Dominant language in the repo: ${dominantLanguage}`);
 
       // Determine the type based on the dominant language
-      if (dominantLanguage === "TypeScript") {
+      if (
+        dominantLanguage === "TypeScript" ||
+        dominantLanguage === "JavaScript"
+      ) {
         type = "js";
       } else if (dominantLanguage === "Rust") {
         type = "rs";
@@ -120,8 +122,10 @@ export const fetchRepoPackage = async ({
       }
     );
 
-    const content = Buffer.from(response.data.content, "base64").toString("utf-8");
-    return content;
+    const content = Buffer.from(response.data.content, "base64").toString(
+      "utf-8"
+    );
+    return { type, content };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error(

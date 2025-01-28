@@ -51,9 +51,9 @@ export const scoutController = async (req: Request, res: Response) => {
     let permited_type = ["js", "rs"];
     // type can be js or rs
     if (!access_token) throw "please provide access token";
-    if (type && !permited_type.includes(type)) throw "invalid type js or rs";
+    // if (type && !permited_type.includes(type)) throw "invalid type js or rs";
 
-    const stringified_document = await fetchRepoPackage({
+    const {type: defined_type, content} = await fetchRepoPackage({
       access_token,
       github_url,
       type
@@ -79,9 +79,9 @@ export const scoutController = async (req: Request, res: Response) => {
     );
 
     const do_scout = await scout(
-      type,
+      defined_type,
       github_url,
-      stringified_document,
+      content,
       user_scout && existing_scout_index && existing_scout_index !== -1
         ? user_scout[existing_scout_index].last_checked
         : new Date(),
