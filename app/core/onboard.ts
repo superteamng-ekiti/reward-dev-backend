@@ -28,6 +28,8 @@ export const onboardUser = async (
     }
   }
 
+  // push for github
+
   const ref_id = generateReferralCode(6);
   let new_user = new UserSchema({
     wallet_address,
