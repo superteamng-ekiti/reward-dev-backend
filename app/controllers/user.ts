@@ -53,7 +53,7 @@ export const scoutController = async (req: Request, res: Response) => {
     if (!access_token) throw "please provide access token";
     // if (type && !permited_type.includes(type)) throw "invalid type js or rs";
 
-    const { type: defined_type, content } = await fetchRepoPackage({
+    const { file: defined_type, content } = await fetchRepoPackage({
       access_token,
       github_url,
       type
@@ -79,7 +79,7 @@ export const scoutController = async (req: Request, res: Response) => {
     );
 
     const do_scout = await scout(
-      defined_type,
+      defined_type as "rs" | "js",
       github_url,
       content,
       user_scout && existing_scout_index && existing_scout_index !== -1

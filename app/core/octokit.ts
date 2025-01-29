@@ -94,14 +94,27 @@ export const fetchRepoPackage = async ({
 
       console.log(`Dominant language in the repo: ${dominantLanguage}`);
 
-      // Determine the type based on the dominant language
-      if (
-        dominantLanguage === "TypeScript" ||
-        dominantLanguage === "JavaScript"
-      ) {
+      if (["TypeScript", "JavaScript"].includes(dominantLanguage)) {
         type = "js";
       } else if (dominantLanguage === "Rust") {
         type = "rs";
+
+        // First, check if `Anchor.toml` exists
+        try {
+          await axios.get(
+            `https://api.github.com/repos/${owner}/${repo}/contents/Anchor.toml`,
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+                Accept: "application/vnd.github.v3+json"
+              }
+            }
+          );
+          console.log("Detected Anchor-based project.");
+          return fetchFile(owner, repo, "Anchor.toml", access_token);
+        } catch {
+          console.log("Anchor.toml not found, falling back to Cargo.toml.");
+        }
       } else {
         throw new Error(
           `Unsupported dominant language: ${dominantLanguage}. Please specify a type.`
@@ -110,8 +123,28 @@ export const fetchRepoPackage = async ({
     }
 
     const fileName = type === "js" ? "package.json" : "Cargo.toml";
+    return fetchFile(owner, repo, fileName, access_token);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(
+        "Error fetching repo package:",
+        error.response?.data || error.message
+      );
+      throw `Failed to fetch file: ${
+        error.response?.data?.message || error.message
+      }`;
+    }
+    throw error;
+  }
+};
 
-    // Fetch the specified file
+const fetchFile = async (
+  owner: string,
+  repo: string,
+  fileName: string,
+  access_token: string
+) => {
+  try {
     const response = await axios.get(
       `https://api.github.com/repos/${owner}/${repo}/contents/${fileName}`,
       {
@@ -125,17 +158,8 @@ export const fetchRepoPackage = async ({
     const content = Buffer.from(response.data.content, "base64").toString(
       "utf-8"
     );
-    return { type, content };
+    return { file: fileName, content };
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Error fetching repo package:",
-        error.response?.data || error.message
-      );
-      throw `Failed to fetch file: ${
-        error.response?.data?.message || error.message
-      }`;
-    }
-    throw error;
+    throw new Error(`Failed to fetch ${fileName}: ${error}`);
   }
 };
