@@ -79,7 +79,7 @@ export const scoutController = async (req: Request, res: Response) => {
     );
 
     const do_scout = await scout(
-      defined_type as "rs" | "js",
+      defined_type,
       github_url,
       content,
       user_scout && existing_scout_index && existing_scout_index !== -1

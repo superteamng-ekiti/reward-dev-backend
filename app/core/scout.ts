@@ -8,7 +8,7 @@ interface CargoToml {
 // testing
 
 export const scout = async (
-  type: "rs" | "js",
+  type: string,
   git_url: string,
   stringified_document: string,
   last_checked: Date,
