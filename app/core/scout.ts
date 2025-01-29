@@ -37,20 +37,22 @@ export const scout = async (
         "@solana/wallet-adapter-react":
           !!package_json.dependencies?.["@solana/wallet-adapter-react"],
         "@solana/wallet-adapter-react-ui":
-          !!package_json.dependencies?.["@solana/wallet-adapter-react-ui"],
+          !!package_json.dependencies?.["@solana/wallet-adapter-react-ui"]
       };
 
       const javascript_interface: IJavascript = {
         git_url,
         last_checked,
         package_json: scoutData,
-        points,
+        points
       };
 
       const points_awarded = awardPointsJS(javascript_interface);
       if (!points_awarded || typeof points_awarded !== "object") {
         throw new Error("Invalid points_awarded structure.");
       }
+
+      if (points_awarded.points == 0) throw "no points awarded";
 
       const user = await UserSchema.findById(id);
       const user_js_scouts = user?.current_scout?.javascript || [];
@@ -95,20 +97,22 @@ export const scout = async (
       const scoutData = {
         solana_sdk: !!dependencies["solana_sdk"],
         anchor_lang: !!dependencies["anchor_lang"],
-        spl_token: !!dependencies["spl_token"],
+        spl_token: !!dependencies["spl_token"]
       };
 
       let rust_interface: IRust = {
         git_url,
         last_checked,
         cargo_toml: scoutData,
-        points,
+        points
       };
 
       const points_awarded = awardPointsRS(rust_interface);
       if (!points_awarded || typeof points_awarded !== "object") {
         throw new Error("Invalid points_awarded structure.");
       }
+
+      if (points_awarded.points == 0) throw "no points awarded";
 
       const user = await UserSchema.findById(id);
       const user_rs_scouts = user?.current_scout?.rust || [];
@@ -194,7 +198,7 @@ const json = {
     dev: "vite",
     build: "tsc -b && vite build",
     lint: "eslint .",
-    preview: "vite preview",
+    preview: "vite preview"
   },
   dependencies: {
     "@radix-ui/react-slot": "^1.1.1",
@@ -216,7 +220,7 @@ const json = {
     viem: "^2.22.9",
     "vite-plugin-svgr": "^4.3.0",
     wagmi: "^2.14.8",
-    zustand: "^5.0.3",
+    zustand: "^5.0.3"
   },
   devDependencies: {
     "@eslint/js": "^9.17.0",
@@ -233,8 +237,8 @@ const json = {
     tailwindcss: "^3.4.17",
     typescript: "~5.6.2",
     "typescript-eslint": "^8.18.2",
-    vite: "^6.0.5",
-  },
+    vite: "^6.0.5"
+  }
 };
 
 // console.log("testing package_json");

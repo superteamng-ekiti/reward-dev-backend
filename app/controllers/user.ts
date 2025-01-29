@@ -53,7 +53,7 @@ export const scoutController = async (req: Request, res: Response) => {
     if (!access_token) throw "please provide access token";
     // if (type && !permited_type.includes(type)) throw "invalid type js or rs";
 
-    const {type: defined_type, content} = await fetchRepoPackage({
+    const { type: defined_type, content } = await fetchRepoPackage({
       access_token,
       github_url,
       type
@@ -94,7 +94,13 @@ export const scoutController = async (req: Request, res: Response) => {
     return serverResponse("awesome 😎", do_scout as Object, 200, { req, res });
   } catch (error) {
     console.log(error);
-    serverResponse(
+    if (error?.toString().includes("points awarded")) {
+      return serverResponse("no points awarded", "no points awarded", 206, {
+        req,
+        res
+      });
+    }
+    return serverResponse(
       "something went wrong calculating those points",
       error as string,
       409,
