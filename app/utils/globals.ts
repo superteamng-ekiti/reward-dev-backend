@@ -33,9 +33,11 @@ export const JSPOINTS = {
 };
 
 export const RUSTPOINTS = {
-  spl_token: 300,
-  solana_sdk: 400,
-  anchor_lang: 300
+  "spl-token": 300,
+  "anch-lang": 200,
+  "solana-program": 300,
+  "solana-sdk": 400,
+  "spl-associated-token-account": 300
 };
 
 export const awardPointsJS = (dependencies: IJavascript): IJavascript => {

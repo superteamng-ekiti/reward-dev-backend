@@ -113,9 +113,12 @@ export const scout = async (
       const dependencies = cargo_toml.dependencies || {};
 
       const scoutData = {
-        solana_sdk: !!dependencies["solana_sdk"],
-        anchor_lang: !!dependencies["anchor_lang"],
-        spl_token: !!dependencies["spl_token"]
+        "spl-token": !!dependencies["spl-token"],
+        "anch-lang": !!dependencies["anch-lang"],
+        "solana-program": !!dependencies["solana-program"],
+        "solana-sdk": !!dependencies["solana-sdk"],
+        "spl-associated-token-account":
+          !!dependencies["spl-associated-token-account"]
       };
 
       let rust_interface: IRust = {

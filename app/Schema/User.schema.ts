@@ -20,9 +20,10 @@ export interface IJavascript {
 export interface IRust {
   git_url: string;
   cargo_toml: {
-    spl_token: boolean;
-    solana_sdk: boolean;
-    anchor_lang: boolean;
+    "spl-token": boolean;
+    "anch-lang": boolean;
+    "solana-program": boolean;
+    "solana-sdk": boolean;
   };
   last_checked: Date;
   points: number;
