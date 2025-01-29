@@ -6,7 +6,9 @@ export const onboardUser = async (
   email: string,
   referrer_ref: string | undefined | null
 ) => {
-  const exising_user = await UserSchema.findOne({ wallet_address });
+  const exising_user = await UserSchema.findOne({
+    $or: [{ email }, { wallet_address }]
+  });
 
   if (exising_user) return exising_user;
 
