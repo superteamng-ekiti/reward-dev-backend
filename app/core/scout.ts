@@ -170,6 +170,8 @@ export const scout = async (
       }
     }
 
+    console.log("type: ", type);
+
     throw new Error("Invalid language type: must be 'rs' or 'js'.");
   } catch (error) {
     console.error("Error in scout function:", error);
