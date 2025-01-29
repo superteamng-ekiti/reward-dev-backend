@@ -30,7 +30,8 @@ export const onboardUser = async (
   let new_user = new UserSchema({
     wallet_address,
     role: "user",
-    referral_code: ref_id
+    referral_code: ref_id,
+    email
   });
 
   new_user = await new_user.save();
