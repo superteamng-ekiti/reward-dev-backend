@@ -62,7 +62,7 @@ import axios from "axios";
 export const fetchRepoPackage = async ({
   access_token,
   github_url,
-  type,
+  type
 }: {
   access_token: string;
   github_url: string;
@@ -82,8 +82,8 @@ export const fetchRepoPackage = async ({
         {
           headers: {
             Authorization: `Bearer ${access_token}`,
-            Accept: "application/vnd.github.v3+json",
-          },
+            Accept: "application/vnd.github.v3+json"
+          }
         }
       );
 
@@ -109,7 +109,7 @@ export const fetchRepoPackage = async ({
       }
     }
 
-    const fileName = type === "js" ? "package.json" : "Anchor.toml";
+    const fileName = type === "js" ? "package.json" : "Cargo.toml";
 
     // Fetch the specified file
     const response = await axios.get(
@@ -117,8 +117,8 @@ export const fetchRepoPackage = async ({
       {
         headers: {
           Authorization: `Bearer ${access_token}`,
-          Accept: "application/vnd.github.v3+json",
-        },
+          Accept: "application/vnd.github.v3+json"
+        }
       }
     );
 
