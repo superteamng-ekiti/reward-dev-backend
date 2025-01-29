@@ -36,6 +36,7 @@ interface IReferree {
 export interface IUser extends Document {
   wallet_address: string;
   createdAt: Date;
+  email: string;
   role: "user" | "admin";
   referrals: Array<IReferree>;
   referral_code: string;
@@ -52,6 +53,11 @@ const UserSchema: Schema<IUser> = new mongoose.Schema(
     wallet_address: {
       type: String,
       required: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true
     },
     createdAt: {
       type: Date,
