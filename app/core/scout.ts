@@ -25,19 +25,37 @@ export const scout = async (
       }
 
       const scoutData = {
-        "@reown/appkit": !!package_json.dependencies?.["@reown/appkit"],
+        "@reown/appkit":
+          !!package_json.dependencies?.["@reown/appkit"] ||
+          !!package_json.devDependencies?.["@reown/appkit"],
+
         "@reown/appkit-adapter-solana":
-          !!package_json.dependencies?.["@reown/appkit-adapter-solana"],
+          !!package_json.dependencies?.["@reown/appkit-adapter-solana"] ||
+          !!package_json.devDependencies?.["@reown/appkit-adapter-solana"],
+
         "@solana/wallet-adapter-wallets":
-          !!package_json.dependencies?.["@solana/wallet-adapter-wallets"],
-        "@solana/web3.js": !!package_json.dependencies?.["@solana/web3.js"],
-        "@solana/spl-token": !!package_json.dependencies?.["@solana/spl-token"],
+          !!package_json.dependencies?.["@solana/wallet-adapter-wallets"] ||
+          !!package_json.devDependencies?.["@solana/wallet-adapter-wallets"],
+
+        "@solana/web3.js":
+          !!package_json.dependencies?.["@solana/web3.js"] ||
+          !!package_json.devDependencies?.["@solana/web3.js"],
+
+        "@solana/spl-token":
+          !!package_json.dependencies?.["@solana/spl-token"] ||
+          !!package_json.devDependencies?.["@solana/spl-token"],
+
         "@solana/wallet-adapter-base":
-          !!package_json.dependencies?.["@solana/wallet-adapter-base"],
+          !!package_json.dependencies?.["@solana/wallet-adapter-base"] ||
+          !!package_json.devDependencies?.["@solana/wallet-adapter-base"],
+
         "@solana/wallet-adapter-react":
-          !!package_json.dependencies?.["@solana/wallet-adapter-react"],
+          !!package_json.dependencies?.["@solana/wallet-adapter-react"] ||
+          !!package_json.devDependencies?.["@solana/wallet-adapter-react"],
+
         "@solana/wallet-adapter-react-ui":
-          !!package_json.dependencies?.["@solana/wallet-adapter-react-ui"]
+          !!package_json.dependencies?.["@solana/wallet-adapter-react-ui"] ||
+          !!package_json.devDependencies?.["@solana/wallet-adapter-react-ui"]
       };
 
       const javascript_interface: IJavascript = {
