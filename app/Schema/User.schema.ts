@@ -34,6 +34,13 @@ interface IReferree {
   email: string;
 }
 
+interface IBadge {
+  name: string;
+  points: number;
+  is_claimable: boolean;
+  date_awarded: Date;
+}
+
 export interface IUser extends Document {
   wallet_address: string;
   createdAt: Date;
@@ -43,6 +50,7 @@ export interface IUser extends Document {
   referral_code: string;
   points: number;
   github_username: string;
+  badges: Array<IBadge>;
   current_scout: {
     javascript?: IJavascript[];
     rust?: IRust[];
@@ -75,6 +83,7 @@ const UserSchema: Schema<IUser> = new mongoose.Schema(
       type: Number,
       default: 0
     },
+    badges: [],
     current_scout: {
       javascript: {
         type: Array<IJavascript>,
