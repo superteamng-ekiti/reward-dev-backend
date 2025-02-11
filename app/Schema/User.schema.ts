@@ -35,9 +35,8 @@ interface IReferree {
 }
 
 interface IBadge {
-  name: string;
+  uid: string;
   points: number;
-  is_claimable: boolean;
   date_awarded: Date;
 }
 
