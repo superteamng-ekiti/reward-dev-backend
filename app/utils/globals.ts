@@ -11,6 +11,10 @@ export const solidLogger = (message: string): void => {
 };
 
 export const generateReferralCode = (length = 5): string => {
+  return "re" + generateRandomId() + "_dev";
+};
+
+export const generateRandomId = (length = 5): string => {
   let result = "";
   let characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -18,7 +22,7 @@ export const generateReferralCode = (length = 5): string => {
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return "re" + result + "_dev";
+  return result;
 };
 
 export const JSPOINTS = {

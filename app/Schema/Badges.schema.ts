@@ -7,18 +7,20 @@ export interface IBadge extends Document {
   ipfs_uri: string;
   is_claimable: boolean;
   back_story: string;
+  multiplier: number;
   date_created: Date;
 }
 
 const BadgeSchema: Schema<IBadge> = new mongoose.Schema(
   {
-    name: String,
-    uid: String,
+    name: { type: String, unique: [true, "name already exists"] },
+    uid: { type: String, unique: [true, "uid already exists"] },
     points: Number,
-    ipfs_uri: String,
+    ipfs_uri: { type: String, unique: [true, "uri already exists"] },
     is_claimable: Boolean,
     back_story: String,
-    date_created: Date
+    date_created: Date,
+    multiplier: Number
   },
   { timestamps: true }
 );

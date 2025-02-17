@@ -36,7 +36,6 @@ interface IReferree {
 
 interface IBadge {
   uid: string;
-  points: number;
   date_awarded: Date;
 }
 
