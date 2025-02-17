@@ -30,3 +30,8 @@ export const createNewBadge = async (badge_property: ICreateBadge) => {
   const badge = await new_badge.save();
   return badge;
 };
+
+export const fetchAllBadges = async () => {
+  const badges = await BadgesSchema.find().lean();
+  return badges;
+};

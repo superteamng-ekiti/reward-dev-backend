@@ -1,5 +1,5 @@
 import { Request, response, Response } from "express";
-import { createNewBadge } from "../core/badges";
+import { createNewBadge, fetchAllBadges } from "../core/badges";
 
 export const createNewBadgeController = async (req: Request, res: Response) => {
   try {
@@ -25,6 +25,21 @@ export const createNewBadgeController = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "created badge successfully",
+      response
+    });
+  } catch (error: any) {
+    return res.status(409).json({
+      message: "something went wrong",
+      response: error.toString()
+    });
+  }
+};
+
+export const fetchBadgesController = async (req: Request, res: Response) => {
+  try {
+    const response = await fetchAllBadges();
+    return res.status(200).json({
+      message: "fetched badges successfully",
       response
     });
   } catch (error: any) {

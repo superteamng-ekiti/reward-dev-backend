@@ -1,9 +1,13 @@
 import express from "express";
-import { createNewBadgeController } from "../controllers/badges";
+import {
+  createNewBadgeController,
+  fetchBadgesController
+} from "../controllers/badges";
 import { isAdmin } from "../middleware/isAdmin";
 
 const badgeRoute = express.Router();
 
-badgeRoute.post("/create-badge", isAdmin, createNewBadgeController);
+badgeRoute.post("/admin/create-badge", isAdmin, createNewBadgeController);
+badgeRoute.get("/get-badges", fetchBadgesController);
 
 export { badgeRoute };
