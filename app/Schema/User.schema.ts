@@ -34,7 +34,7 @@ interface IReferree {
   email: string;
 }
 
-interface IBadge {
+export interface IBadge {
   uid: string;
   date_awarded: Date;
 }
@@ -59,39 +59,39 @@ const UserSchema: Schema<IUser> = new mongoose.Schema(
   {
     wallet_address: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     createdAt: {
       type: Date,
-      default: new Date()
+      default: new Date(),
     },
     role: {
       type: String,
       default: "user",
-      enum: ["user", "admin"]
+      enum: ["user", "admin"],
     },
     referrals: [],
     referral_code: String,
     points: {
       type: Number,
-      default: 0
+      default: 0,
     },
     badges: [],
     current_scout: {
       javascript: {
         type: Array<IJavascript>,
-        default: []
+        default: [],
       },
       rust: {
         type: Array<IRust>,
-        default: []
-      }
-    }
+        default: [],
+      },
+    },
   },
   { timestamps: true }
 );
